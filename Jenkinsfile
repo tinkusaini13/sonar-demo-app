@@ -53,7 +53,7 @@ pipeline{
                     
                     withSonarQubeEnv(credentialsId: 'sonar-api') {
                         
-                        sh 'mvn sonar:sonar -Dsonar.login=admin -Dsonar.password=${sonar-api} -Dsonar.projectKey=demo'
+                        sh 'mvn sonar:sonar -Dsonar.host.url=http://13.235.134.96:9000  -Dsonar.login=admin -Dsonar.password=${sonar-api}'
 
                     }
                    }
