@@ -10,7 +10,8 @@ pipeline{
                 
                 script{
                     
-                    git branch: 'main', url: 'https://github.com/tinkusaini13/sonar-demo-app.git'
+                    //git branch: 'main', url: 'https://github.com/tinkusaini13/sonar-demo-app.git'
+                    sh 'mvn sonar:sonar -Dsonar.host.url=http://13.235.134.96:9000  -Dsonar.login=${sonar-api}'
                 }
             }
         }
