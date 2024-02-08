@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                git branch: 'main', url: 'https://github.com/tinkusaini13/sonar-demo-app.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    sh 'mvn clean package'
+                    archiveArtifacts 'target/*.war'
+                }
+            }
+        }
+        stage('Deploy to Tomcat') {
+            steps {
+                script {
+                  "sh cp -r target/.war* /tmp/"
+                }
+            }
+        }
+    }
+}      
