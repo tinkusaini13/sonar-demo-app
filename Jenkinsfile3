@@ -1,0 +1,95 @@
+pipeline {
+    agent any 
+
+    environment {
+        NEXUS_URL = 'http://13.127.115.42:8081/repository/spring_app/'
+        NEXUS_CREDENTIALS_ID = 'nexus_id'
+    }
+
+    stages {
+        stage('Git Checkout') {
+            steps {
+                script {
+                    git branch: 'main', url: 'https://github.com/tinkusaini13/sonar-demo-app.git'
+                }
+            }
+        }
+
+        stage('UNIT testing') {
+            steps {
+                script {
+                    sh 'mvn test'
+                }
+            }
+        }
+
+        stage('Integration testing') {
+            steps {
+                script {
+                    sh 'mvn verify -DskipUnitTests'
+                }
+            }
+        }
+
+        stage('Maven build') {
+            steps {
+                script {
+                    sh 'mvn clean package'
+                }
+            }
+        }
+
+        stage('Static code analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv(credentialsId: 'sonar-api') {
+                        sh 'mvn sonar:sonar \
+                            -Dsonar.projectKey=sonardemoapp \
+                            -Dsonar.host.url=http://13.127.115.42:9000 \
+                            -Dsonar.login=sqp_36e19579515d56c26e4e0acb6191acbf7d5039fc'
+                    }
+                }
+            }
+        }
+
+        stage("SonarQube Quality Gate Check") {
+            steps {
+                script {
+                    def qualityGate = waitForQualityGate()
+                    
+                    if (qualityGate.status != 'OK') {
+                        echo "${qualityGate.status}"
+                        error "Quality Gate failed: ${qualityGate.status}"
+                    } else {
+                        echo "${qualityGate.status}"
+                        echo "SonarQube Quality Gates Passed"
+                    }
+                }
+            }
+        }
+
+        stage('Deploy to Nexus') {
+            steps {
+                script {
+                    nexusArtifactUploader(
+                        artifacts: [
+                            [
+                                artifactId: 'springboot',
+                                classifier: '',
+                                file: 'target/springboot-1.0.0.jar',
+                                type: 'jar'
+                            ]
+                        ],
+                        credentialsId: NEXUS_CREDENTIALS_ID,
+                        groupId: 'org.springframework.boot',
+                        nexusUrl: NEXUS_URL,
+                        nexusVersion: 'nexus2',
+                        protocol: 'http',
+                        repository: 'spring_app',
+                        version: '2.6.6'
+                    )
+                }
+            }
+        }
+    }
+}
