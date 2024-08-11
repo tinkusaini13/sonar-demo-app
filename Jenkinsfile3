@@ -2,7 +2,7 @@ pipeline {
     agent any 
 
     environment {
-        NEXUS_URL = 'http://13.127.115.42:8081/repository/spring_app/'
+        NEXUS_URL = 'http://13.200.72.249:8081/repository/spring_app/'
         NEXUS_CREDENTIALS_ID = 'nexus_id'
     }
 
@@ -10,7 +10,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 script {
-                    git branch: 'main', url: 'https://github.com/tinkusaini13/sonar-demo-app.git'
+                    git branch: 'main', url: 'https://gitlab.com/yuvraj_07/sonardemoapp.git'
                 }
             }
         }
@@ -45,7 +45,7 @@ pipeline {
                     withSonarQubeEnv(credentialsId: 'sonar-api') {
                         sh 'mvn sonar:sonar \
                             -Dsonar.projectKey=sonardemoapp \
-                            -Dsonar.host.url=http://13.127.115.42:9000 \
+                            -Dsonar.host.url=http://13.200.72.249:9000 \
                             -Dsonar.login=sqp_36e19579515d56c26e4e0acb6191acbf7d5039fc'
                     }
                 }
