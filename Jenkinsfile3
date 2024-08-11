@@ -2,7 +2,7 @@ pipeline {
     agent any 
 
     environment {
-        NEXUS_URL = 'http://13.200.72.249:8081/repository/spring_app/'
+        NEXUS_URL = 'http://13.200.72.249:8081'
         NEXUS_CREDENTIALS_ID = 'nexus_id'
     }
 
@@ -84,14 +84,13 @@ pipeline {
                         ],
                         credentialsId: NEXUS_CREDENTIALS_ID,
                         groupId: 'org.springframework.boot',
-                        nexusUrl: NEXUS_URL,
-                        nexusVersion: 'nexus2',
+                        nexusUrl: "${NEXUS_URL}/repository/spring_app/",
+                        nexusVersion: 'nexus2', // or 'nexus3' depending on your Nexus version
                         protocol: 'http',
                         repository: 'spring_app',
-                        version: '2.6.6'
+                        version: '1.0.0' // Make sure this matches the version of the artifact
                     )
                 }
             }
-        }
     }
 }
