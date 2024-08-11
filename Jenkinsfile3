@@ -83,12 +83,12 @@ pipeline {
                             ]
                         ],
                         credentialsId: NEXUS_CREDENTIALS_ID,
-                        groupId: 'org.springframework.boot',
+                        groupId: 'com.example',
                         nexusUrl: "${NEXUS_URL}/repository/spring_app/",
-                        nexusVersion: 'nexus2', // or 'nexus3' depending on your Nexus version
+                        nexusVersion: 'nexus3', // Assuming Nexus 3.x
                         protocol: 'http',
                         repository: 'spring_app',
-                        version: '1.0.0' // Make sure this matches the version of the artifact
+                        version: '1.0.0'
                     )
                 }
             }
