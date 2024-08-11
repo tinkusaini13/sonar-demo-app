@@ -42,12 +42,31 @@ pipeline {
                 }
             }
         }
-        stage('Quality Gate Status') {
+
+       stage("SonarQube Quality Gate Check") {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-api'
+                def qualityGate = waitForQualityGate()
+                    
+                    if (qualityGate.status != 'OK') {
+                        echo "${qualityGate.status}"
+                        error "Quality Gate failed: ${qualityGateStatus}"
+                    }
+                    else {
+                        echo "${qualityGate.status}"
+                        echo "SonarQube Quality Gates Passed"
+                    }
                 }
             }
         }
+
+}
+
+
+
+
+
+
+
     }
 }
